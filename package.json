@@ -1,0 +1,23 @@
+{
+  "name": "html-inline-actions",
+  "version": "1.0.0",
+  "description": "GitHub Action to inline CSS and JS into HTML files",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test dist/**/*.test.js",
+    "lint": "tsc --noEmit",
+    "package": "npm run build && npm pack"
+  },
+  "keywords": ["github-actions", "html", "inline", "css", "js"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
