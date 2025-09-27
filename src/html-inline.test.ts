@@ -32,7 +32,7 @@ test('should inline CSS from link tag', async () => {
   await fs.writeFile(join(tempDir, 'style.css'), cssContent);
   await fs.writeFile(join(tempDir, 'test.html'), htmlContent);
 
-  const result = await inlineHtml(join(tempDir, 'test.html'), { basedir: tempDir });
+  const result = await inlineHtml(join(tempDir, 'test.html'));
 
   strictEqual(result.replace(/\s+/g, ' ').trim(), expectedOutput.replace(/\s+/g, ' ').trim());
 
@@ -66,7 +66,7 @@ test('should inline JavaScript from script tag', async () => {
   await fs.writeFile(join(tempDir, 'script.js'), jsContent);
   await fs.writeFile(join(tempDir, 'test.html'), htmlContent);
 
-  const result = await inlineHtml(join(tempDir, 'test.html'), { basedir: tempDir });
+  const result = await inlineHtml(join(tempDir, 'test.html'));
 
   strictEqual(result.replace(/\s+/g, ' ').trim(), expectedOutput.replace(/\s+/g, ' ').trim());
 
@@ -87,7 +87,7 @@ test('should inline images as base64', async () => {
   await fs.writeFile(join(tempDir, 'test.png'), imageData);
   await fs.writeFile(join(tempDir, 'test.html'), htmlContent);
 
-  const result = await inlineHtml(join(tempDir, 'test.html'), { basedir: tempDir });
+  const result = await inlineHtml(join(tempDir, 'test.html'));
 
   const isBase64DataUrl = result.includes('data:image/png;base64,');
   strictEqual(isBase64DataUrl, true);
