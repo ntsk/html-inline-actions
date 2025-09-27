@@ -28,6 +28,10 @@ A GitHub Action that inlines CSS, JavaScript, and images into HTML files.
 | `prefix` | - | `''` | Prefix for output filenames |
 | `suffix` | - | `''` | Suffix for output filenames |
 | `overwrite` | - | `'false'` | Overwrite original files (true/false) |
+| `ignore-styles` | - | `'false'` | Skip inlining CSS stylesheets |
+| `ignore-scripts` | - | `'false'` | Skip inlining JavaScript files |
+| `ignore-images` | - | `'false'` | Skip inlining images as base64 |
+| `ignore-links` | - | `'false'` | Skip inlining non-stylesheet links |
 
 ## Example
 
