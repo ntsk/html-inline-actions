@@ -1,0 +1,45 @@
+name: Demo
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build action
+      run: npm run build
+
+    - name: Test HTML inline action
+      uses: ./
+      with:
+        paths: 'examples/index.html'
+        prefix: 'inlined-'
+
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      with:
+        name: inlined-html
+        path: examples/inlined-*.html
+
+    - name: Show result file content
+      run: |
+        echo "=== Original HTML ==="
+        cat examples/index.html
+        echo ""
+        echo "=== Inlined HTML ==="
+        cat examples/inlined-index.html
