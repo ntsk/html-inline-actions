@@ -18,6 +18,22 @@ inputs:
     description: 'Overwrite original files instead of creating new ones'
     required: false
     default: 'false'
+  ignore-styles:
+    description: 'Skip inlining CSS stylesheets'
+    required: false
+    default: 'false'
+  ignore-scripts:
+    description: 'Skip inlining JavaScript files'
+    required: false
+    default: 'false'
+  ignore-images:
+    description: 'Skip inlining images as base64'
+    required: false
+    default: 'false'
+  ignore-links:
+    description: 'Skip inlining non-stylesheet links'
+    required: false
+    default: 'false'
 
 runs:
   using: 'node20'

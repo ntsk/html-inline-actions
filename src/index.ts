@@ -81,6 +81,11 @@ export async function main(): Promise<void> {
     const inputSuffix = process.env.INPUT_SUFFIX;
     const overwrite = process.env.INPUT_OVERWRITE === 'true';
 
+    const ignoreStyles = process.env['INPUT_IGNORE-STYLES'] === 'true';
+    const ignoreScripts = process.env['INPUT_IGNORE-SCRIPTS'] === 'true';
+    const ignoreImages = process.env['INPUT_IGNORE-IMAGES'] === 'true';
+    const ignoreLinks = process.env['INPUT_IGNORE-LINKS'] === 'true';
+
     // If neither prefix nor suffix is specified, use default prefix
     let prefix = '';
     let suffix = '';
@@ -125,7 +130,12 @@ export async function main(): Promise<void> {
         continue;
       }
 
-      const inlinedHtml = await inlineHtml(filePath);
+      const inlinedHtml = await inlineHtml(filePath, {
+        ignoreStyles,
+        ignoreScripts,
+        ignoreImages,
+        ignoreLinks
+      });
 
       let outputPath: string;
 
