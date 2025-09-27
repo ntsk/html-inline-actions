@@ -1,0 +1,28 @@
+name: 'HTML Inline Actions'
+description: 'Inline CSS and JavaScript into HTML files with optional prefix/suffix'
+author: 'ntsk'
+
+inputs:
+  paths:
+    description: 'Input HTML file paths or directories (YAML array or single path)'
+    required: true
+  prefix:
+    description: 'Prefix for output files'
+    required: false
+    default: ''
+  suffix:
+    description: 'Suffix for output files'
+    required: false
+    default: ''
+  overwrite:
+    description: 'Overwrite original files instead of creating new ones'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+
+branding:
+  icon: 'file-text'
+  color: 'blue'
