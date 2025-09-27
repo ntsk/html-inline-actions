@@ -1,6 +1,6 @@
 # HTML Inline Actions
 
-A GitHub Action that inlines CSS, JavaScript, and images into HTML files.
+A GitHub Action that inlines CSS, JavaScript, and images into HTML files. Built with minimal dependencies and simple, efficient implementation.
 
 ## Features
 
