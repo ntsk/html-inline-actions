@@ -1,6 +1,8 @@
 # HTML Inline Actions
 
 ![](https://github.com/ntsk/html-inline-actions/actions/workflows/ci.yml/badge.svg)
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-HTML%20Inline%20Actions-blue.svg?colorA=24292e&colorB=0366d6&style=flat)](https://github.com/marketplace/actions/html-inline-actions)
+
 
 A GitHub Action that inlines CSS, JavaScript, and images into HTML files. Built with minimal dependencies to keep it simple and focused on inlining tasks.
 
