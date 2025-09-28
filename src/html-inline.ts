@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import { resolve, relative, isAbsolute, extname } from 'path';
-import { createDataUrl } from './streaming-base64';
+import { createDataUrl } from './streaming-base64.js';
 
 interface InlineOptions {
   ignoreScripts?: boolean;

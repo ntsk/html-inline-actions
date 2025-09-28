@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import { resolve, dirname, basename, extname, join } from 'path';
-import { inlineHtml } from './html-inline';
+import { inlineHtml } from './html-inline.js';
 
 /**
  * Parse input paths from GitHub Actions environment variable.
