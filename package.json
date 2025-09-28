@@ -2,6 +2,8 @@
   "name": "html-inline-actions",
   "version": "1.0.0",
   "description": "GitHub Action to inline CSS and JS into HTML files",
+  "type": "module",
+  "private": true,
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
