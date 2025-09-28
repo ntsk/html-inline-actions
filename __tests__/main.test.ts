@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { jest } from '@jest/globals';
-import * as core from './__fixtures__/core.js';
+import * as core from '../__fixtures__/core.js';
 
 // Mock @actions/core before dynamic import
 jest.unstable_mockModule('@actions/core', () => core);
@@ -57,12 +57,6 @@ describe('HTML Inline Actions', () => {
 
       // Check if output file was created
       const outputPath = join(tempDir, 'index-processed.html');
-      console.log('Looking for output file at:', outputPath);
-
-      // List all files in temp directory for debugging
-      const files = await fs.readdir(tempDir);
-      console.log('Files in temp directory:', files);
-
       const outputExists = await fs.access(outputPath).then(() => true).catch(() => false);
       expect(outputExists).toBe(true);
 
