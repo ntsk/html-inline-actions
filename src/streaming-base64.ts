@@ -12,7 +12,11 @@ import { createReadStream } from 'fs'
 export class Base64Transform extends Transform {
   private remainder = Buffer.alloc(0)
 
-  _transform(chunk: Buffer, encoding: string, callback: Function) {
+  _transform(
+    chunk: Buffer,
+    _encoding: string,
+    callback: (error?: Error | null) => void
+  ) {
     // Concatenate previous remainder with new chunk
     const data = Buffer.concat([this.remainder, chunk])
 
@@ -34,7 +38,7 @@ export class Base64Transform extends Transform {
     callback()
   }
 
-  _flush(callback: Function) {
+  _flush(callback: (error?: Error | null) => void) {
     // Process any remaining bytes at the end (with padding)
     if (this.remainder.length > 0) {
       this.push(this.remainder.toString('base64'))

@@ -12,8 +12,8 @@ function parseInputPaths(pathsInput: string): string[] {
 
   try {
     // Try parsing as JSON array (GitHub Actions converts YAML arrays to JSON)
-    const parsed = JSON.parse(pathsInput)
-    return Array.isArray(parsed) ? parsed : [parsed]
+    const parsed = JSON.parse(pathsInput) as unknown
+    return Array.isArray(parsed) ? (parsed as string[]) : [parsed as string]
   } catch {
     // Fallback to comma-separated string (legacy support)
     return pathsInput

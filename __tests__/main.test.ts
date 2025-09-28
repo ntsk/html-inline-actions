@@ -2,13 +2,13 @@ import { promises as fs } from 'fs'
 import { join } from 'path'
 import { tmpdir } from 'os'
 import { jest } from '@jest/globals'
-import * as core from '../__fixtures__/core.js'
+import * as core from '../__fixtures__/core.ts'
 
-// Mock @actions/core before dynamic import
+// Mock @actions/core before importing the main function
 jest.unstable_mockModule('@actions/core', () => core)
 
-// Dynamically import the main function from built source after mocking
-const { main } = await import('../dist/index.js')
+// Dynamically import the main function after setting up mocks
+const { main } = await import('../src/index.ts')
 
 describe('HTML Inline Actions', () => {
   beforeEach(() => {
@@ -37,13 +37,12 @@ describe('HTML Inline Actions', () => {
     await fs.writeFile(join(tempDir, 'index.html'), htmlContent)
 
     // Mock @actions/core functions
-    // Configure mock implementations
     core.getInput.mockImplementation(name => {
       switch (name) {
         case 'paths':
           return join(tempDir, 'index.html')
         case 'prefix':
-          return undefined
+          return ''
         case 'suffix':
           return '-processed'
         default:
@@ -113,7 +112,7 @@ describe('HTML Inline Actions', () => {
         case 'paths':
           return `${join(tempDir, 'page1.html')},${join(tempDir, 'page2.html')}`
         case 'prefix':
-          return undefined
+          return ''
         case 'suffix':
           return '-processed'
         default:
@@ -165,7 +164,7 @@ describe('HTML Inline Actions', () => {
         case 'paths':
           return originalPath
         case 'prefix':
-          return undefined
+          return ''
         case 'suffix':
           return undefined
         default:

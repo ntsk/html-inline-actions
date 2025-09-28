@@ -7,8 +7,21 @@ export default {
   coverageReporters: ['json-summary', 'text', 'lcov'],
   extensionsToTreatAsEsm: ['.ts'],
   moduleFileExtensions: ['ts', 'js'],
-  preset: 'ts-jest',
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1'
+  },
+  preset: 'ts-jest/presets/default-esm',
+  reporters: ['default'],
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.test.ts'],
+  transform: {
+    '^.+\\.ts$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.json',
+        useESM: true
+      }
+    ]
+  },
   verbose: true
 }
