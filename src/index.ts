@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import { resolve, dirname, basename, extname, join } from 'path';
+import * as core from '@actions/core';
 import { inlineHtml } from './html-inline.js';
 
 /**
@@ -40,7 +41,7 @@ async function findHtmlFiles(dirPath: string): Promise<string[]> {
       }
     }
   } catch (error) {
-    console.warn(`Could not read directory: ${dirPath}`, error);
+    core.warning(`Could not read directory: ${dirPath}`);
   }
 
   return htmlFiles;
@@ -67,7 +68,7 @@ async function expandPaths(inputPaths: string[]): Promise<string[]> {
         expandedPaths.push(resolvedPath);
       }
     } catch (error) {
-      console.warn(`Path not found: ${inputPath}`);
+      core.warning(`Path not found: ${inputPath}`);
     }
   }
 
@@ -76,15 +77,15 @@ async function expandPaths(inputPaths: string[]): Promise<string[]> {
 
 export async function main(): Promise<void> {
   try {
-    const paths = process.env.INPUT_PATHS || '';
-    const inputPrefix = process.env.INPUT_PREFIX;
-    const inputSuffix = process.env.INPUT_SUFFIX;
-    const overwrite = process.env.INPUT_OVERWRITE === 'true';
+    const paths = core.getInput('paths') || '';
+    const inputPrefix = core.getInput('prefix');
+    const inputSuffix = core.getInput('suffix');
+    const overwrite = core.getBooleanInput('overwrite');
 
-    const ignoreStyles = process.env['INPUT_IGNORE-STYLES'] === 'true';
-    const ignoreScripts = process.env['INPUT_IGNORE-SCRIPTS'] === 'true';
-    const ignoreImages = process.env['INPUT_IGNORE-IMAGES'] === 'true';
-    const ignoreLinks = process.env['INPUT_IGNORE-LINKS'] === 'true';
+    const ignoreStyles = core.getBooleanInput('ignore-styles');
+    const ignoreScripts = core.getBooleanInput('ignore-scripts');
+    const ignoreImages = core.getBooleanInput('ignore-images');
+    const ignoreLinks = core.getBooleanInput('ignore-links');
 
     // If neither prefix nor suffix is specified, use default prefix
     let prefix = '';
@@ -116,17 +117,17 @@ export async function main(): Promise<void> {
     // Expand directories to HTML files
     const expandedPaths = await expandPaths(inputPaths);
     if (expandedPaths.length === 0) {
-      console.warn('No HTML files found in the specified paths');
+      core.warning('No HTML files found in the specified paths');
       return;
     }
 
-    console.log(`Found ${expandedPaths.length} HTML file(s) to process`);
+    core.info(`Found ${expandedPaths.length} HTML file(s) to process`);
 
     for (const filePath of expandedPaths) {
       try {
         await fs.access(filePath);
       } catch {
-        console.error(`File not accessible: ${filePath}`);
+        core.error(`File not accessible: ${filePath}`);
         continue;
       }
 
@@ -170,14 +171,14 @@ export async function main(): Promise<void> {
       await fs.writeFile(outputPath, inlinedHtml, 'utf-8');
 
       if (overwrite) {
-        console.log(`Overwritten: ${filePath}`);
+        core.info(`Overwritten: ${filePath}`);
       } else {
-        console.log(`Processed: ${filePath} -> ${outputPath}`);
+        core.info(`Processed: ${filePath} -> ${outputPath}`);
       }
     }
   } catch (error) {
-    console.error('Error processing files:', error);
-    process.exit(1);
+    core.setFailed(`Error processing files: ${error}`);
+    return;
   }
 }
 

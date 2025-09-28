@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import { resolve, relative, isAbsolute, extname } from 'path';
+import * as core from '@actions/core';
 import { createDataUrl } from './streaming-base64.js';
 
 interface InlineOptions {
@@ -53,7 +54,7 @@ async function inlineStyles(html: string, basedir: string): Promise<string> {
         const styleTag = `<style>${cssContent}</style>`;
         result = result.replace(linkTag, styleTag);
       } catch (error) {
-        console.warn(`Could not inline stylesheet: ${cssPath}`);
+        core.warning(`Could not inline stylesheet: ${cssPath}`);
       }
     }
   }
@@ -80,7 +81,7 @@ async function inlineScripts(html: string, basedir: string): Promise<string> {
         const inlineScript = `<script>${jsContent}</script>`;
         result = result.replace(scriptTag, inlineScript);
       } catch (error) {
-        console.warn(`Could not inline script: ${jsPath}`);
+        core.warning(`Could not inline script: ${jsPath}`);
       }
     }
   }
@@ -115,7 +116,7 @@ async function inlineImages(html: string, basedir: string): Promise<string> {
         const newImgTag = imgTag.replace(/src=["'][^"']+["']/i, `src="${dataUrl}"`);
         result = result.replace(imgTag, newImgTag);
       } catch (error) {
-        console.warn(`Could not inline image: ${imgPath}`, error);
+        core.warning(`Could not inline image: ${imgPath}`);
       }
     }
   }
@@ -157,7 +158,7 @@ async function inlineLinks(html: string, basedir: string): Promise<string> {
         const newLinkTag = linkTag.replace(/href=["'][^"']+["']/i, `href="${dataUrl}"`);
         result = result.replace(linkTag, newLinkTag);
       } catch (error) {
-        console.warn(`Could not inline link: ${linkPath}`);
+        core.warning(`Could not inline link: ${linkPath}`);
       }
     }
   }

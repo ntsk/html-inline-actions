@@ -1,11 +1,20 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
+import { jest } from '@jest/globals';
+import * as core from './__fixtures__/core.js';
 
-// Import the main function from the bundled dist file
+// Mock @actions/core before dynamic import
+jest.unstable_mockModule('@actions/core', () => core);
+
+// Dynamically import the main function from built source after mocking
 const { main } = await import('../dist/index.js');
 
 describe('HTML Inline Actions', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('should process HTML file with CSS, JS, and images', async () => {
     const tempDir = await fs.mkdtemp(join(tmpdir(), 'html-inline-action-test-'));
 
@@ -27,16 +36,20 @@ describe('HTML Inline Actions', () => {
     await fs.writeFile(join(tempDir, 'script.js'), jsContent);
     await fs.writeFile(join(tempDir, 'index.html'), htmlContent);
 
-    // Set environment variables for the action
-    process.env.INPUT_PATHS = join(tempDir, 'index.html');
-    process.env.INPUT_SUFFIX = '-processed';
+    // Mock @actions/core functions
+    // Configure mock implementations
+    core.getInput.mockImplementation((name) => {
+      switch (name) {
+        case 'paths': return join(tempDir, 'index.html');
+        case 'prefix': return undefined;
+        case 'suffix': return '-processed';
+        default: return '';
+      }
+    });
+    core.getBooleanInput.mockImplementation(() => false);
 
-    // Mock console.log to capture output
+    // Keep console.log for debugging, don't mock it for now
     const originalLog = console.log;
-    const logMessages: string[] = [];
-    console.log = (...args: any[]) => {
-      logMessages.push(args.join(' '));
-    };
 
     try {
       // Run the main function
@@ -44,6 +57,12 @@ describe('HTML Inline Actions', () => {
 
       // Check if output file was created
       const outputPath = join(tempDir, 'index-processed.html');
+      console.log('Looking for output file at:', outputPath);
+
+      // List all files in temp directory for debugging
+      const files = await fs.readdir(tempDir);
+      console.log('Files in temp directory:', files);
+
       const outputExists = await fs.access(outputPath).then(() => true).catch(() => false);
       expect(outputExists).toBe(true);
 
@@ -87,9 +106,16 @@ describe('HTML Inline Actions', () => {
     await fs.writeFile(join(tempDir, 'page1.html'), htmlContent);
     await fs.writeFile(join(tempDir, 'page2.html'), htmlContent);
 
-    // Set environment variables
-    process.env.INPUT_PATHS = `${join(tempDir, 'page1.html')},${join(tempDir, 'page2.html')}`;
-    process.env.INPUT_SUFFIX = '-processed';
+    // Configure mock implementations
+    core.getInput.mockImplementation((name) => {
+      switch (name) {
+        case 'paths': return `${join(tempDir, 'page1.html')},${join(tempDir, 'page2.html')}`;
+        case 'prefix': return undefined;
+        case 'suffix': return '-processed';
+        default: return '';
+      }
+    });
+    core.getBooleanInput.mockImplementation(() => false);
 
     const originalLog = console.log;
     console.log = () => {}; // Suppress output
@@ -106,8 +132,6 @@ describe('HTML Inline Actions', () => {
     } finally {
       console.log = originalLog;
       await fs.rm(tempDir, { recursive: true });
-      delete process.env.INPUT_PATHS;
-      delete process.env.INPUT_SUFFIX;
     }
   });
 
@@ -124,8 +148,18 @@ describe('HTML Inline Actions', () => {
     const originalPath = join(tempDir, 'original.html');
     await fs.writeFile(originalPath, htmlContent);
 
-    process.env.INPUT_PATHS = originalPath;
-    process.env.INPUT_OVERWRITE = 'true';
+    // Configure mock implementations
+    core.getInput.mockImplementation((name) => {
+      switch (name) {
+        case 'paths': return originalPath;
+        case 'prefix': return undefined;
+        case 'suffix': return undefined;
+        default: return '';
+      }
+    });
+    core.getBooleanInput.mockImplementation((name) => {
+      return name === 'overwrite';
+    });
 
     const originalLog = console.log;
     console.log = () => {};
@@ -144,8 +178,7 @@ describe('HTML Inline Actions', () => {
     } finally {
       console.log = originalLog;
       await fs.rm(tempDir, { recursive: true });
-      delete process.env.INPUT_PATHS;
-      delete process.env.INPUT_OVERWRITE;
+      jest.restoreAllMocks();
     }
   });
 });

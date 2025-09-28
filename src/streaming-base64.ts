@@ -1,9 +1,5 @@
 import { Transform } from 'stream';
 import { createReadStream } from 'fs';
-import { pipeline } from 'stream';
-import { promisify } from 'util';
-
-const pipelineAsync = promisify(pipeline);
 
 /**
  * A streaming Transform class that converts binary data to Base64 encoding in chunks.
