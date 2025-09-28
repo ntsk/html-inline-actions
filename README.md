@@ -1,5 +1,7 @@
 # HTML Inline Actions
 
+![](https://github.com/ntsk/html-inline-actions/actions/workflows/ci.yml/badge.svg)
+
 A GitHub Action that inlines CSS, JavaScript, and images into HTML files. Built with minimal dependencies to keep it simple and focused on inlining tasks.
 
 ## Features
