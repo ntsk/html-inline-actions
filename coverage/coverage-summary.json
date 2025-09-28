@@ -1,0 +1,5 @@
+{"total": {"lines":{"total":205,"covered":0,"skipped":0,"pct":0},"statements":{"total":207,"covered":0,"skipped":0,"pct":0},"functions":{"total":21,"covered":0,"skipped":0,"pct":0},"branches":{"total":83,"covered":0,"skipped":0,"pct":0},"branchesTrue":{"total":0,"covered":0,"skipped":0,"pct":"Unknown"}}
+,"/Users/ntsk/work/html-inline-actions/src/html-inline.ts": {"lines":{"total":90,"covered":0,"skipped":0,"pct":0},"functions":{"total":7,"covered":0,"skipped":0,"pct":0},"statements":{"total":90,"covered":0,"skipped":0,"pct":0},"branches":{"total":29,"covered":0,"skipped":0,"pct":0}}
+,"/Users/ntsk/work/html-inline-actions/src/index.ts": {"lines":{"total":86,"covered":0,"skipped":0,"pct":0},"functions":{"total":6,"covered":0,"skipped":0,"pct":0},"statements":{"total":88,"covered":0,"skipped":0,"pct":0},"branches":{"total":50,"covered":0,"skipped":0,"pct":0}}
+,"/Users/ntsk/work/html-inline-actions/src/streaming-base64.ts": {"lines":{"total":29,"covered":0,"skipped":0,"pct":0},"functions":{"total":8,"covered":0,"skipped":0,"pct":0},"statements":{"total":29,"covered":0,"skipped":0,"pct":0},"branches":{"total":4,"covered":0,"skipped":0,"pct":0}}
+}
