@@ -13,10 +13,7 @@ promisify(pipeline);
  * them over to the next transformation cycle.
  */
 class Base64Transform extends Transform {
-    constructor() {
-        super(...arguments);
-        this.remainder = Buffer.alloc(0);
-    }
+    remainder = Buffer.alloc(0);
     _transform(chunk, encoding, callback) {
         // Concatenate previous remainder with new chunk
         const data = Buffer.concat([this.remainder, chunk]);
