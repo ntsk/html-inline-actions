@@ -1,10 +1,12 @@
 name: 'HTML Inline Actions'
-description: 'Inline CSS and JavaScript into HTML files with optional prefix/suffix'
+description:
+  'Inline CSS and JavaScript into HTML files with optional prefix/suffix'
 author: 'ntsk'
 
 inputs:
   paths:
-    description: 'Input HTML file paths or directories (YAML array or single path)'
+    description:
+      'Input HTML file paths or directories (YAML array or single path)'
     required: true
   prefix:
     description: 'Prefix for output files'

@@ -11,4 +11,4 @@ export default {
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.test.ts'],
   verbose: true
-};
+}
