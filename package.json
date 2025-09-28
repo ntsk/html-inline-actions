@@ -5,17 +5,26 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && node --test dist/**/*.test.js",
+    "test": "jest",
     "lint": "tsc --noEmit",
     "package": "npm run build && npm pack"
   },
-  "keywords": ["github-actions", "html", "inline", "css", "js"],
+  "keywords": [
+    "github-actions",
+    "html",
+    "inline",
+    "css",
+    "js"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "ts-node": "^10.0.0"
+    "jest": "^30.1.3",
+    "ts-jest": "^29.4.4",
+    "ts-node": "^10.0.0",
+    "typescript": "^5.0.0"
   },
   "engines": {
     "node": ">=18"
