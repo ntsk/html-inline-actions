@@ -2,13 +2,13 @@ import { promises as fs } from 'fs'
 import { join } from 'path'
 import { tmpdir } from 'os'
 import { jest } from '@jest/globals'
-import * as core from '../__fixtures__/core.ts'
+import * as core from '../__fixtures__/core.js'
 
 // Mock @actions/core before importing the main function
 jest.unstable_mockModule('@actions/core', () => core)
 
 // Dynamically import the main function after setting up mocks
-const { main } = await import('../src/index.ts')
+const { main } = await import('../src/index.js')
 
 describe('HTML Inline Actions', () => {
   beforeEach(() => {
@@ -166,7 +166,7 @@ describe('HTML Inline Actions', () => {
         case 'prefix':
           return ''
         case 'suffix':
-          return undefined
+          return ''
         default:
           return ''
       }
