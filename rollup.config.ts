@@ -18,7 +18,6 @@ export default {
     format: 'es',
     sourcemap: true
   },
-  external: ['@actions/core'],
   plugins: [
     typescript({
       exclude: ['**/__tests__/**', '**/__fixtures__/**']
