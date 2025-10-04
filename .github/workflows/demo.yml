@@ -54,7 +54,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: inlined-html
-          path: examples/*-*.html
+          path: |
+            examples/single-*.html
+            examples/wildcard-*.html
+            examples/dir-*.html
+            examples/multiline-*.html
 
       - name: Show result files content
         run: |
