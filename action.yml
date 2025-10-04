@@ -6,7 +6,7 @@ author: 'ntsk'
 inputs:
   paths:
     description:
-      'Input HTML file paths or directories (YAML array or single path)'
+      'A file, directory or wildcard pattern that describes HTML files to process'
     required: true
   prefix:
     description: 'Prefix for output files'
