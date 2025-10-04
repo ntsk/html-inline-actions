@@ -145,6 +145,60 @@ describe('HTML Inline Actions', () => {
     }
   })
 
+  test('should handle multiline paths', async () => {
+    const tempDir = await fs.mkdtemp(join(tmpdir(), 'html-inline-action-test-'))
+
+    const htmlContent = `<!DOCTYPE html>
+<html>
+<body>
+  <h1>Test</h1>
+</body>
+</html>`
+
+    // Write test files
+    await fs.writeFile(join(tempDir, 'page1.html'), htmlContent)
+    await fs.writeFile(join(tempDir, 'page2.html'), htmlContent)
+
+    // Configure mock implementations with multiline path
+    core.getInput.mockImplementation(name => {
+      switch (name) {
+        case 'path':
+          return `${join(tempDir, 'page1.html')}
+${join(tempDir, 'page2.html')}`
+        case 'prefix':
+          return ''
+        case 'suffix':
+          return '-processed'
+        default:
+          return ''
+      }
+    })
+    core.getBooleanInput.mockImplementation(() => false)
+
+    const originalLog = console.log
+    console.log = () => {}
+
+    try {
+      await main()
+
+      // Check if both output files were created
+      const output1 = await fs
+        .access(join(tempDir, 'page1-processed.html'))
+        .then(() => true)
+        .catch(() => false)
+      const output2 = await fs
+        .access(join(tempDir, 'page2-processed.html'))
+        .then(() => true)
+        .catch(() => false)
+
+      expect(output1).toBe(true)
+      expect(output2).toBe(true)
+    } finally {
+      console.log = originalLog
+      await fs.rm(tempDir, { recursive: true })
+    }
+  })
+
   test('should handle overwrite mode', async () => {
     const tempDir = await fs.mkdtemp(join(tmpdir(), 'html-inline-action-test-'))
 
