@@ -1,94 +1,53 @@
-import { promises as fs } from 'fs'
-import { resolve, dirname, basename, extname, join } from 'path'
+import { promises as fs, stat as statSync } from 'fs'
+import { resolve, dirname, basename, extname } from 'path'
+import { promisify } from 'util'
 import * as core from '@actions/core'
+import * as glob from '@actions/glob'
 import { inlineHtml } from './html-inline.js'
 
-/**
- * Parse input paths from GitHub Actions environment variable.
- * Supports both YAML array format and comma-separated string format.
- */
-function parseInputPaths(pathsInput: string): string[] {
-  if (!pathsInput) return []
+const stat = promisify(statSync)
 
-  try {
-    // Try parsing as JSON array (GitHub Actions converts YAML arrays to JSON)
-    const parsed = JSON.parse(pathsInput) as unknown
-    return Array.isArray(parsed) ? (parsed as string[]) : [parsed as string]
-  } catch {
-    // Fallback to comma-separated string (legacy support)
-    return pathsInput
-      .split(',')
-      .map(p => p.trim())
-      .filter(p => p.length > 0)
-  }
-}
+async function findFilesToProcess(
+  searchPath: string
+): Promise<{ files: string[]; rootDirectory: string }> {
+  const globber = await glob.create(searchPath, {
+    followSymbolicLinks: true,
+    implicitDescendants: true,
+    omitBrokenSymbolicLinks: true
+  })
 
-/**
- * Find all HTML files in a directory recursively.
- */
-async function findHtmlFiles(dirPath: string): Promise<string[]> {
-  const htmlFiles: string[] = []
+  const rawSearchResults = await globber.glob()
+  const searchPaths = globber.getSearchPaths()
+  const files: string[] = []
 
-  try {
-    const entries = await fs.readdir(dirPath, { withFileTypes: true })
-
-    for (const entry of entries) {
-      const fullPath = join(dirPath, entry.name)
-
-      if (entry.isDirectory()) {
-        // Recursively search subdirectories
-        const subFiles = await findHtmlFiles(fullPath)
-        htmlFiles.push(...subFiles)
-      } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.html')) {
-        htmlFiles.push(fullPath)
+  for (const result of rawSearchResults) {
+    const fileStats = await stat(result)
+    if (!fileStats.isDirectory()) {
+      if (result.toLowerCase().endsWith('.html')) {
+        core.debug(`File: ${result} was found using the provided searchPath`)
+        files.push(result)
       }
-    }
-  } catch (error) {
-    if (error instanceof Error) {
-      core.warning(`Could not read directory: ${dirPath} - ${error.message}`)
     } else {
-      core.warning(`Could not read directory: ${dirPath}`)
+      core.debug(`Removing ${result} from results because it is a directory`)
     }
   }
 
-  return htmlFiles
-}
-
-/**
- * Expand paths to include HTML files from directories.
- */
-async function expandPaths(inputPaths: string[]): Promise<string[]> {
-  const expandedPaths: string[] = []
-
-  for (const inputPath of inputPaths) {
-    const resolvedPath = resolve(inputPath)
-
-    try {
-      const stat = await fs.stat(resolvedPath)
-
-      if (stat.isDirectory()) {
-        // If directory, find all HTML files
-        const htmlFiles = await findHtmlFiles(resolvedPath)
-        expandedPaths.push(...htmlFiles)
-      } else if (stat.isFile()) {
-        // If file, add as-is
-        expandedPaths.push(resolvedPath)
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        core.warning(`Path not found: ${inputPath} - ${error.message}`)
-      } else {
-        core.warning(`Path not found: ${inputPath}`)
-      }
+  if (files.length === 1 && searchPaths[0] === files[0]) {
+    return {
+      files,
+      rootDirectory: dirname(files[0])
     }
   }
 
-  return expandedPaths
+  return {
+    files,
+    rootDirectory: searchPaths[0]
+  }
 }
 
 export async function main(): Promise<void> {
   try {
-    const paths = core.getInput('paths') || ''
+    const paths = core.getInput('paths', { required: true })
     const inputPrefix = core.getInput('prefix')
     const inputSuffix = core.getInput('suffix')
     const overwrite = core.getBooleanInput('overwrite')
@@ -98,7 +57,6 @@ export async function main(): Promise<void> {
     const ignoreImages = core.getBooleanInput('ignore-images')
     const ignoreLinks = core.getBooleanInput('ignore-links')
 
-    // If neither prefix nor suffix is specified, use default prefix
     let prefix = ''
     let suffix = ''
 
@@ -110,31 +68,26 @@ export async function main(): Promise<void> {
       suffix = inputSuffix
     }
 
-    // Apply default prefix only if both are unspecified
     if (inputPrefix === undefined && inputSuffix === undefined) {
       prefix = 'inlined-'
     }
 
-    if (!paths) {
-      throw new Error('Input paths are required')
-    }
+    const searchResult = await findFilesToProcess(paths)
 
-    // Parse input paths (supports YAML arrays and comma-separated strings)
-    const inputPaths = parseInputPaths(paths)
-    if (inputPaths.length === 0) {
-      throw new Error('No valid paths provided')
-    }
-
-    // Expand directories to HTML files
-    const expandedPaths = await expandPaths(inputPaths)
-    if (expandedPaths.length === 0) {
-      core.warning('No HTML files found in the specified paths')
+    if (searchResult.files.length === 0) {
+      core.warning(
+        `No HTML files were found with the provided path: ${paths}. No files will be processed.`
+      )
       return
     }
 
-    core.info(`Found ${expandedPaths.length} HTML file(s) to process`)
+    const s = searchResult.files.length === 1 ? '' : 's'
+    core.info(
+      `With the provided path, there will be ${searchResult.files.length} file${s} processed`
+    )
+    core.debug(`Root directory is ${searchResult.rootDirectory}`)
 
-    for (const filePath of expandedPaths) {
+    for (const filePath of searchResult.files) {
       try {
         await fs.access(filePath)
       } catch {
@@ -158,21 +111,18 @@ export async function main(): Promise<void> {
         const name = basename(filePath, extname(filePath))
         const ext = extname(filePath)
 
-        // Handle flexible prefix/suffix combinations
         let outputFileName: string
         if (prefix && suffix) {
           outputFileName = `${prefix}${name}${suffix}${ext}`
         } else if (prefix && !suffix) {
           outputFileName = `${prefix}${name}${ext}`
         } else if (!prefix && suffix) {
-          // If suffix contains dot, treat it as part of extension
           if (suffix.startsWith('.')) {
             outputFileName = `${name}${suffix}${ext}`
           } else {
             outputFileName = `${name}${suffix}${ext}`
           }
         } else {
-          // Both prefix and suffix are empty, use default suffix
           outputFileName = `${name}-inlined${ext}`
         }
 
