@@ -50,6 +50,7 @@
     "node": ">=24.0.0"
   },
   "dependencies": {
-    "@actions/core": "^1.11.1"
+    "@actions/core": "^1.11.1",
+    "@actions/glob": "^0.5.0"
   }
 }
