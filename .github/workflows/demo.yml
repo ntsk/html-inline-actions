@@ -42,16 +42,27 @@ jobs:
           path: 'examples/'
           prefix: 'dir-'
 
+      - name: Test with multiline paths
+        uses: ./
+        with:
+          path: |
+            examples/index.html
+            examples/about.html
+          prefix: 'multiline-'
+
       - name: Upload results
         uses: actions/upload-artifact@v4
         with:
           name: inlined-html
-          path: examples/*-index.html
+          path: examples/*-*.html
 
       - name: Show result files content
         run: |
-          echo "=== Original HTML ==="
+          echo "=== Original index.html ==="
           cat examples/index.html
+          echo ""
+          echo "=== Original about.html ==="
+          cat examples/about.html
           echo ""
           echo "=== Single file result ==="
           cat examples/single-index.html
@@ -61,3 +72,9 @@ jobs:
           echo ""
           echo "=== Directory result ==="
           cat examples/dir-index.html
+          echo ""
+          echo "=== Multiline paths result (index) ==="
+          cat examples/multiline-index.html
+          echo ""
+          echo "=== Multiline paths result (about) ==="
+          cat examples/multiline-about.html
