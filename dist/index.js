@@ -30019,7 +30019,7 @@ async function findFilesToProcess(searchPath) {
 }
 async function main() {
     try {
-        const paths = coreExports.getInput('paths', { required: true });
+        const path = coreExports.getInput('path', { required: true });
         const inputPrefix = coreExports.getInput('prefix');
         const inputSuffix = coreExports.getInput('suffix');
         const overwrite = coreExports.getBooleanInput('overwrite');
@@ -30038,9 +30038,9 @@ async function main() {
         if (inputPrefix === undefined && inputSuffix === undefined) {
             prefix = 'inlined-';
         }
-        const searchResult = await findFilesToProcess(paths);
+        const searchResult = await findFilesToProcess(path);
         if (searchResult.files.length === 0) {
-            coreExports.warning(`No HTML files were found with the provided path: ${paths}. No files will be processed.`);
+            coreExports.warning(`No HTML files were found with the provided path: ${path}. No files will be processed.`);
             return;
         }
         const s = searchResult.files.length === 1 ? '' : 's';

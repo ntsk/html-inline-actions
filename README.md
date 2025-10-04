@@ -18,7 +18,7 @@ A GitHub Action that inlines CSS, JavaScript, and images into HTML files. Built 
 ```yaml
 - uses: ntsk/html-inline-actions@v1
   with:
-    paths: 'src/*.html'
+    path: 'src/*.html'
     prefix: 'inlined-'
 ```
 
@@ -26,7 +26,7 @@ A GitHub Action that inlines CSS, JavaScript, and images into HTML files. Built 
 
 | Parameter | Required | Default | Description |
 |-----------|----------|---------|-------------|
-| `paths` | ✓ | - | A file, directory or wildcard pattern that describes HTML files to process |
+| `path` | ✓ | - | A file, directory or wildcard pattern that describes HTML files to process |
 | `prefix` | - | `''` | Prefix for output filenames |
 | `suffix` | - | `''` | Suffix for output filenames |
 | `overwrite` | - | `'false'` | Overwrite original files (true/false) |

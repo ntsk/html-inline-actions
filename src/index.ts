@@ -47,7 +47,7 @@ async function findFilesToProcess(
 
 export async function main(): Promise<void> {
   try {
-    const paths = core.getInput('paths', { required: true })
+    const path = core.getInput('path', { required: true })
     const inputPrefix = core.getInput('prefix')
     const inputSuffix = core.getInput('suffix')
     const overwrite = core.getBooleanInput('overwrite')
@@ -72,11 +72,11 @@ export async function main(): Promise<void> {
       prefix = 'inlined-'
     }
 
-    const searchResult = await findFilesToProcess(paths)
+    const searchResult = await findFilesToProcess(path)
 
     if (searchResult.files.length === 0) {
       core.warning(
-        `No HTML files were found with the provided path: ${paths}. No files will be processed.`
+        `No HTML files were found with the provided path: ${path}. No files will be processed.`
       )
       return
     }

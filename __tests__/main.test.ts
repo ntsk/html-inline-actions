@@ -39,7 +39,7 @@ describe('HTML Inline Actions', () => {
     // Mock @actions/core functions
     core.getInput.mockImplementation(name => {
       switch (name) {
-        case 'paths':
+        case 'path':
           return join(tempDir, 'index.html')
         case 'prefix':
           return ''
@@ -109,7 +109,7 @@ describe('HTML Inline Actions', () => {
     // Configure mock implementations
     core.getInput.mockImplementation(name => {
       switch (name) {
-        case 'paths':
+        case 'path':
           return join(tempDir, '*.html')
         case 'prefix':
           return ''
@@ -161,7 +161,7 @@ describe('HTML Inline Actions', () => {
     // Configure mock implementations
     core.getInput.mockImplementation(name => {
       switch (name) {
-        case 'paths':
+        case 'path':
           return originalPath
         case 'prefix':
           return ''
