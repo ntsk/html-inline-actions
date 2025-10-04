@@ -92,7 +92,7 @@ describe('HTML Inline Actions', () => {
     }
   })
 
-  test('should handle multiple files', async () => {
+  test('should handle multiple files with wildcard pattern', async () => {
     const tempDir = await fs.mkdtemp(join(tmpdir(), 'html-inline-action-test-'))
 
     const htmlContent = `<!DOCTYPE html>
@@ -110,7 +110,7 @@ describe('HTML Inline Actions', () => {
     core.getInput.mockImplementation(name => {
       switch (name) {
         case 'paths':
-          return `${join(tempDir, 'page1.html')},${join(tempDir, 'page2.html')}`
+          return join(tempDir, '*.html')
         case 'prefix':
           return ''
         case 'suffix':
@@ -122,7 +122,7 @@ describe('HTML Inline Actions', () => {
     core.getBooleanInput.mockImplementation(() => false)
 
     const originalLog = console.log
-    console.log = () => {} // Suppress output
+    console.log = () => {}
 
     try {
       await main()
