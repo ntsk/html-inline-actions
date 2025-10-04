@@ -24,22 +24,40 @@ jobs:
       - name: Build action
         run: npm run bundle
 
-      - name: Test HTML inline action
+      - name: Test with single file path
         uses: ./
         with:
           paths: 'examples/index.html'
-          prefix: 'inlined-'
+          prefix: 'single-'
+
+      - name: Test with wildcard pattern
+        uses: ./
+        with:
+          paths: 'examples/*.html'
+          prefix: 'wildcard-'
+
+      - name: Test with directory path
+        uses: ./
+        with:
+          paths: 'examples/'
+          prefix: 'dir-'
 
       - name: Upload results
         uses: actions/upload-artifact@v4
         with:
           name: inlined-html
-          path: examples/inlined-*.html
+          path: examples/*-index.html
 
-      - name: Show result file content
+      - name: Show result files content
         run: |
           echo "=== Original HTML ==="
           cat examples/index.html
           echo ""
-          echo "=== Inlined HTML ==="
-          cat examples/inlined-index.html
+          echo "=== Single file result ==="
+          cat examples/single-index.html
+          echo ""
+          echo "=== Wildcard pattern result ==="
+          cat examples/wildcard-index.html
+          echo ""
+          echo "=== Directory result ==="
+          cat examples/dir-index.html
