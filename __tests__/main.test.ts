@@ -92,6 +92,60 @@ describe('HTML Inline Actions', () => {
     }
   })
 
+  test('should inline script tags with whitespace before the closing tag', async () => {
+    const tempDir = await fs.mkdtemp(join(tmpdir(), 'html-inline-action-test-'))
+
+    const jsContent = 'console.log("Hello");'
+    const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+  <script src="script.js" defer>
+  </script>
+  <script src="other.js">   </script>
+</head>
+<body>
+  <h1>Test</h1>
+</body>
+</html>`
+
+    await fs.writeFile(join(tempDir, 'script.js'), jsContent)
+    await fs.writeFile(join(tempDir, 'other.js'), jsContent)
+    await fs.writeFile(join(tempDir, 'index.html'), htmlContent)
+
+    core.getInput.mockImplementation(name => {
+      switch (name) {
+        case 'path':
+          return join(tempDir, 'index.html')
+        case 'prefix':
+          return ''
+        case 'suffix':
+          return '-processed'
+        default:
+          return ''
+      }
+    })
+    core.getBooleanInput.mockImplementation(() => false)
+
+    const originalLog = console.log
+    console.log = () => {}
+
+    try {
+      await main()
+
+      const result = await fs.readFile(
+        join(tempDir, 'index-processed.html'),
+        'utf-8'
+      )
+
+      expect(result).toContain('<script>console.log("Hello");</script>')
+      expect(result).not.toContain('src="script.js"')
+      expect(result).not.toContain('src="other.js"')
+    } finally {
+      console.log = originalLog
+      await fs.rm(tempDir, { recursive: true })
+    }
+  })
+
   test('should handle multiple files with wildcard pattern', async () => {
     const tempDir = await fs.mkdtemp(join(tmpdir(), 'html-inline-action-test-'))
 

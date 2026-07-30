@@ -72,7 +72,7 @@ async function inlineStyles(html: string, basedir: string): Promise<string> {
 }
 
 async function inlineScripts(html: string, basedir: string): Promise<string> {
-  const scriptRegex = /<script\s+([^>]*src=["'][^"']+["'][^>]*)><\/script>/gi
+  const scriptRegex = /<script\s+([^>]*src=["'][^"']+["'][^>]*)>\s*<\/script>/gi
   let result = html
   let match
 
