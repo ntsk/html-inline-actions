@@ -31315,7 +31315,9 @@ async function createDataUrl(filePath, mimeType) {
         return `data:${mimeType};base64,${base64Data}`;
     }
     catch (error) {
-        throw new Error(`Failed to create data URL for ${filePath}: ${error}`);
+        throw new Error(`Failed to create data URL for ${filePath}: ${error}`, {
+            cause: error
+        });
     }
 }
 

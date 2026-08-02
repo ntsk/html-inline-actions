@@ -78,6 +78,8 @@ export async function createDataUrl(
     const base64Data = await streamToBase64(filePath)
     return `data:${mimeType};base64,${base64Data}`
   } catch (error) {
-    throw new Error(`Failed to create data URL for ${filePath}: ${error}`)
+    throw new Error(`Failed to create data URL for ${filePath}: ${error}`, {
+      cause: error
+    })
   }
 }
