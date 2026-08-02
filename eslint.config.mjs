@@ -1,7 +1,6 @@
 import typescriptEslint from '@typescript-eslint/eslint-plugin'
 import jest from 'eslint-plugin-jest'
 import prettier from 'eslint-plugin-prettier'
-import _import from 'eslint-plugin-import'
 import globals from 'globals'
 import tsParser from '@typescript-eslint/parser'
 import js from '@eslint/js'
@@ -14,8 +13,7 @@ export default [
   {
     files: ['**/*.js', '**/*.mjs'],
     plugins: {
-      prettier: prettier,
-      import: _import
+      prettier: prettier
     },
     languageOptions: {
       globals: {
@@ -28,20 +26,7 @@ export default [
     },
     rules: {
       'prettier/prettier': 'error',
-      'no-console': 'off',
-      'import/order': [
-        'error',
-        {
-          groups: [
-            'builtin',
-            'external',
-            'internal',
-            'parent',
-            'sibling',
-            'index'
-          ]
-        }
-      ]
+      'no-console': 'off'
     }
   },
   {
@@ -49,8 +34,7 @@ export default [
     plugins: {
       '@typescript-eslint': typescriptEslint,
       jest: jest,
-      prettier: prettier,
-      import: _import
+      prettier: prettier
     },
     languageOptions: {
       globals: {
@@ -73,20 +57,7 @@ export default [
       '@typescript-eslint/no-unsafe-assignment': 'warn',
       '@typescript-eslint/no-unsafe-member-access': 'warn',
       '@typescript-eslint/no-unsafe-call': 'warn',
-      '@typescript-eslint/no-unsafe-return': 'warn',
-      'import/order': [
-        'error',
-        {
-          groups: [
-            'builtin',
-            'external',
-            'internal',
-            'parent',
-            'sibling',
-            'index'
-          ]
-        }
-      ]
+      '@typescript-eslint/no-unsafe-return': 'warn'
     }
   },
   {
